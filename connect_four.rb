@@ -113,26 +113,49 @@ class Turns
   def return_player
     return @turn_count%2 == 0 ? @red_player : @black_player
   end
+
+  def return_color
+    return @turn_count%2 == 0 ? 'red' : 'black'
+  end
 end
 
 def run
+  game_continue = true
+
   puts 'What is the name of the player who will use black pieces?'
   black = gets.chomp!
   puts 'What is the name of the player who will use red pieces?'
   red = gets.chomp!
 
+  game = Board.new
   players = Players.new(black, red)
   turns = Turns.new(players)
 
-  puts "It is #{turns.return_player}'s turn."
+  while game_continue do
 
+    puts "The current board looks like:"
+    print "#{game.print_board}"
+    valid_response = false
+    until valid_response do
+      puts "It is #{turns.return_player}'s turn. Please pick a slot from 1 to 7 to place your next piece in:"
+      position = gets.chomp!
+      if position.to_i.to_s == position
+        position = position.to_i - 1
+        valid_response = true if position >= 0 && position < 7 && game.place_piece(position, turns.return_color)
+      end
+    end
+
+    turns.increment
+
+    valid_response = false
+    if game.game_over? 
+      puts "#{turns.return_player} has gotten four in a row! Congratulations. Play again?"
+      response = gets.chomp!.downcase
+      valid_resopnse = true if response == 'yes' || response == 'no'
+      game_continue = false if response == 'no'
+      game = Board.new if response == 'yes'
+    end
+  end
 end
 
-game = Board.new
-game.place_piece(0, 'red')
-game.place_piece(0, 'red')
-
-game.place_piece(0, 'black')
-game.print_board
-
-
+run
