@@ -8,6 +8,7 @@ class Board
   end
 
   def place_piece(horizontal_coord, color)
+    return false if horizontal_coord >= @width
     next_empty = pick_first_empty_slot(@grid[horizontal_coord])
     if next_empty 
       @grid[horizontal_coord][next_empty] = color
@@ -17,7 +18,6 @@ class Board
   end
 
   def pick_first_empty_slot(column)
-    return false if column >= @width
     column.each_with_index do |slot, index|
       return index if slot == 'empty'
     end
@@ -72,6 +72,40 @@ class Board
   end
 end
 
-game = Board.new
-3.times { game.place_piece(0, 'black') }
-puts game.game_over?
+class Players
+  attr_reader :black_player, :red_player
+
+  def initialize(black, red)
+    @black_player = black
+    @red_player = red
+  end
+end
+
+class Turns
+  attr_reader :turn_count
+  def initialize(players)
+    @turn_count = 0
+    @black_player = players.black_player
+    @red_player = players.red_player
+  end
+
+  def increment
+    @turn_count += 1
+  end
+
+  def return_player
+    return @turn_count%2 == 0 ? @red_player : @black_player
+  end
+end
+
+def run
+  puts 'Who will play with black pieces?'
+  black = gets.chomp!
+  puts 'Who will play with red pieces?'
+  red = gets.chomp!
+
+  players = Players.new(black, red)
+  turns = Turns.new(players)
+
+
+end

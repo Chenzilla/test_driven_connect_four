@@ -109,3 +109,33 @@ describe 'board' do
     end
   end
 end
+
+describe 'players' do
+  before :all do
+    @players = Players.new('Black Player', 'Red Player')
+  end 
+
+  it 'should create a red team player' do
+    expect(@players.red_player).to eq 'Red Player'
+  end
+
+  it 'should create a black team player' do
+    expect(@players.black_player).to eq 'Black Player'
+  end
+end
+
+describe 'turns' do
+  before :all do
+    @players = Players.new('Black Player', 'Red Player')
+    @turns = Turns.new(@players)
+  end
+
+  it 'should return the red player name on even turns' do
+    expect(@turns.return_player).to eq 'Red Player'
+  end
+
+  it 'should return the black player name on odd turns' do
+    @turns.increment
+    expect(@turns.return_player).to eq 'Black Player'
+  end
+end
