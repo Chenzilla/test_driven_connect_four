@@ -17,6 +17,7 @@ class Board
   end
 
   def pick_first_empty_slot(column)
+    return false if column >= @width
     column.each_with_index do |slot, index|
       return index if slot == 'empty'
     end
@@ -24,14 +25,46 @@ class Board
   end
 
   def game_over?
+
+    #Check to see if there are any vertical matches
     vertical_count = 1
+
     @grid.each_with_index do |column, column_index|
       column.each_with_index do |slot, slot_index|
+
         if slot_index != 0 && slot == column[slot_index - 1] && slot != 'empty'
           vertical_count += 1
           return true if vertical_count == 4
         else 
           vertical_count = 1
+        end
+
+        horizontal_count = 1
+
+        @grid.each_with_index do |column2, column2_index|
+          #Check to see if there are any horizontal matches
+
+          if column2_index != 0 && column[slot_index] == @grid[column2_index - 1][slot_index] && column2[slot_index] != 'empty'
+            horizontal_count += 1
+            return true if horizontal_count == 4
+          else
+            horizontal_count = 1
+          end
+
+          #Check to see if there are any diagonal matches in the right direction
+          if column2_index < @height - 4 && slot_index < @width - 4
+            return true if @grid[column2_index][slot_index] != 'empty' &&
+                           @grid[column2_index][slot_index] == @grid[column2_index+1][slot_index+1] &&
+                           @grid[column2_index+1][slot_index+1] == @grid[column2_index+2][slot_index+2] &&
+                           @grid[column2_index+2][slot_index+2] == @grid[column2_index+3][slot_index+3] 
+          end
+          #Check to see if there are any diagonal matches in the left direction
+          if column2_index < @height - 4 && slot_index > 2
+            return true if @grid[column2_index][slot_index] != 'empty' &&
+                           @grid[column2_index][slot_index] == @grid[column2_index+1][slot_index+1] &&
+                           @grid[column2_index+1][slot_index+1] == @grid[column2_index+2][slot_index+2] &&
+                           @grid[column2_index+2][slot_index+2] == @grid[column2_index+3][slot_index+3]
+          end
         end
       end
     end
@@ -39,4 +72,6 @@ class Board
   end
 end
 
-
+game = Board.new
+3.times { game.place_piece(0, 'black') }
+puts game.game_over?

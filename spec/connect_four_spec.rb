@@ -43,16 +43,68 @@ describe 'board' do
     end
 
     context 'when there are four pieces in a row vertically' do
-      it 'should be game over' do
+      it 'should be game over if they are the same color' do
         4.times { @game.place_piece(3, 'black') }
-        print @game.grid
         expect(@game.game_over?).to be true
+      end
+
+      it 'shouldn\'t be game over if they are not the same color' do
+        3.times { @game.place_piece(3, 'black') }
+        @game.place_piece(3, 'red')
+        expect(@game.game_over?).to be false
       end
     end
 
     context 'when there are four pieces in a row horizontally' do
-      it 'should be game over' do
+      it 'should be game over if they are the same color' do
+        @game.place_piece(0, 'red')
+        @game.place_piece(1, 'red')
+        @game.place_piece(2, 'red')
+        @game.place_piece(3, 'red')
+        expect(@game.game_over?).to be true
+      end
 
+      it 'shouldn\'t be game over if they are not the same color' do
+        @game.place_piece(0, 'red')
+        @game.place_piece(1, 'red')
+        @game.place_piece(2, 'red')    
+        @game.place_piece(3, 'black')  
+      end
+    end
+
+    context 'when there are four pieces in a row diagonally' do
+      it 'matches in a right diagonal direction' do
+        @game.place_piece(0, 'red')
+
+        @game.place_piece(1, 'black')
+        @game.place_piece(1, 'red')
+
+        @game.place_piece(2, 'black')
+        @game.place_piece(2, 'red')
+        @game.place_piece(2, 'red')
+
+        @game.place_piece(3, 'red')
+        @game.place_piece(3, 'black')
+        @game.place_piece(3, 'black')
+        @game.place_piece(3, 'red')
+
+        expect(@game.game_over?).to be true
+      end
+
+      it 'matches in a left diagonal direction' do
+        @game.place_piece(6, 'red')
+
+        @game.place_piece(5, 'black')
+        @game.place_piece(5, 'red')
+
+        @game.place_piece(4, 'black')
+        @game.place_piece(4, 'red')
+        @game.place_piece(4, 'red')
+
+        @game.place_piece(3, 'red')
+        @game.place_piece(3, 'black')
+        @game.place_piece(3, 'black')
+        @game.place_piece(3, 'red')
       end
     end
   end
