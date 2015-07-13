@@ -8,6 +8,8 @@ class Board
   end
 
   def place_piece(horizontal_coord, color)
+    color = color == 'black' ? "\u25CE" : "\u25C9"
+
     return false if horizontal_coord >= @width
     next_empty = pick_first_empty_slot(@grid[horizontal_coord])
     if next_empty 
@@ -70,6 +72,21 @@ class Board
     end
     return false
   end
+
+  def print_board
+    vertical_coord = @height-1
+    while vertical_coord >= 0 
+      print_array = ''
+      horizontal_coord = 0
+      while horizontal_coord < @width - 1
+        print_array += @grid[horizontal_coord][vertical_coord].encode('utf-8').center(7) + '|' 
+        horizontal_coord += 1
+      end
+      puts print_array
+      puts '-'*@width*7
+      vertical_coord -= 1
+    end
+  end
 end
 
 class Players
@@ -99,13 +116,23 @@ class Turns
 end
 
 def run
-  puts 'Who will play with black pieces?'
+  puts 'What is the name of the player who will use black pieces?'
   black = gets.chomp!
-  puts 'Who will play with red pieces?'
+  puts 'What is the name of the player who will use red pieces?'
   red = gets.chomp!
 
   players = Players.new(black, red)
   turns = Turns.new(players)
 
+  puts "It is #{turns.return_player}'s turn."
 
 end
+
+game = Board.new
+game.place_piece(0, 'red')
+game.place_piece(0, 'red')
+
+game.place_piece(0, 'black')
+game.print_board
+
+
